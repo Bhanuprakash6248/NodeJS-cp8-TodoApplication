@@ -30,6 +30,8 @@ const initializeDbAndServer = async () => {
 
 initializeDbAndServer()
 
+module.exports = app
+
 const hasPriorityAndStatusProperties = requestQuery => {
   return (
     requestQuery.priority !== undefined && requestQuery.status !== undefined
@@ -54,7 +56,7 @@ app.get('/todos/', async (request, response) => {
         FROM 
           todo
         WHERE
-          todo LIKE "${search_q}"
+          todo LIKE "%${search_q}%"
           AND priority = "${priority}"
           AND status = "${status}";`
       break
@@ -64,7 +66,7 @@ app.get('/todos/', async (request, response) => {
         FROM 
           todo
         WHERE
-          todo LIKE "${search_q}"
+          todo LIKE "%${search_q}%"
           AND priority = "${priority}";`
       break
     case hasStatusProperty(request.query):
@@ -73,7 +75,7 @@ app.get('/todos/', async (request, response) => {
         FROM 
           todo
         WHERE
-          todo LIKE "${search_q}"
+          todo LIKE "%${search_q}%"
           AND status = "${status}";`
       break
     default:
@@ -82,7 +84,7 @@ app.get('/todos/', async (request, response) => {
         FROM 
           todo
         WHERE
-          todo LIKE "${search_q}";`
+          todo LIKE "%${search_q}%";`
   }
   data = await db.all(getTodoQuery)
   response.send(data)
@@ -115,5 +117,5 @@ app.post('/todos/', async (request, response) => {
       `
   await db.run(createTodoTable)
 
-  response.send("Todo Successfully Added")
-});
+  response.send('Todo Successfully Added')
+})
